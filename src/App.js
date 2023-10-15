@@ -10,6 +10,10 @@ import UserProvider from "./contexts/UserContext/UserContext";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import AdminMovie from "./modules/AdminMovie/AdminMovie";
 
+import "swiper/css";
+import "swiper/css/grid";
+import "swiper/css/pagination";
+
 function App() {
   return (
     <UserProvider>
