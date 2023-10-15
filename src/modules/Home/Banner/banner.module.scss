@@ -1,0 +1,17 @@
+.banner {
+    .carousel {
+        .carousel-control-prev{
+            .carousel-control-prev-icon {
+                width: 50px ;
+                height: 100px ;
+                font-weight: bold ;
+            }
+        }
+    }
+    .banner_img{
+        width: 100%;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+}
