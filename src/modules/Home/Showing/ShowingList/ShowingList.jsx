@@ -14,9 +14,9 @@ import { Box, Modal } from "@mui/material";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import ReactPlayer from "react-player";
 
-// import "swiper/css";
-// import "swiper/css/grid";
-// import "swiper/css/pagination";
+import "swiper/css";
+import "swiper/css/grid";
+import "swiper/css/pagination";
 
 // const style = {
 //   position: "absolute",
