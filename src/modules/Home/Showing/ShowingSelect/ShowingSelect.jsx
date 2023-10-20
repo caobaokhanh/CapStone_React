@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+// import { getMovies } from "../../../../apis/movieAPI";
+import { getMovieShowtimes } from "../../../../apis/cinemaAPI";
 import { ButtonMovie } from "../../../../components/ButtonMovie";
 import {
   Box,
@@ -8,22 +12,42 @@ import {
   Paper,
   Select,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
-import { getMovies } from "../../../../apis/movieAPI";
-import { getMovieShowtimes } from "../../../../apis/cinemaAPI";
+import dayjs from "dayjs";
 
-export default function ShowingSelect() {
-  const [movie, setMovie] = React.useState("");
-
-  const { data: movies = [], isLoading } = useQuery({
-    queryKey: ["movies"],
-    queryFn: getMovies,
+export default function ShowingSelect({ movies }) {
+  const [movie, setMovie] = useState("");
+  const [cinema, setCinema] = useState("");
+  const [date, setDate] = useState("");
+  const [codeTimeCinema, setCodeTimeCinema] = useState("");
+  const [errors, setErrors] = useState(false);
+  const { data: cinemas = [] } = useQuery({
+    queryKey: ["listCinema", movie],
+    queryFn: () => getMovieShowtimes(movie),
+    enabled: !!movie,
   });
 
-  const handleChangeMovie = (evt) => {
+  // const { data: movies = [], isLoading } = useQuery({
+  //   queryKey: ["movies"],
+  //   queryFn: getMovies,
+  // });
+
+  const [dateCinemas, setDateCinemas] = useState([]);
+  const navigate = useNavigate();
+
+  const handleChangeMovie = (event) => {
     // console.log(evt.target.value);
-    setMovie(evt.target.value);
+    setMovie(event.target.value);
   };
+
+  const handleChangeCinema = (event) => {
+    setCinema(event.target.value);
+    setDateCinemas(event.target.value.cumRapChieu);
+  };
+
+  const handleChangeDate = (event) => {
+    setDate(event.target.value);
+  };
+
   return (
     <Paper
       style={{
@@ -48,32 +72,45 @@ export default function ShowingSelect() {
             id="demo-simple-select-autowidth"
             value={movie}
             onChange={handleChangeMovie}
+            error={!!errors}
+            autoWidth
+            label="Phim"
           >
             <MenuItem value="">
-              <em>Chọn Phim</em>
+              <em>Chọn phim</em>{" "}
             </MenuItem>
-
-            {movies.map((movie) => {
-              return <MenuItem>{movie.tenPhim}</MenuItem>;
+            {movies.map((movieItem) => {
+              return (
+                <MenuItem key={movieItem.maPhim} value={movieItem.maPhim}>
+                  {movieItem.tenPhim}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>
-
         <FormControl sx={{ m: 1, minWidth: 80, width: 1 / 4 }} color="warning">
           <InputLabel id="demo-simple-select-autowidth-label">Rạp</InputLabel>
           <Select
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
-            // value={age}
-            // label="Age"
-            // onChange={handleChange}
+            value={cinema}
+            onChange={handleChangeCinema}
+            error={!!errors}
+            autoWidth
+            label="Rạp"
           >
             <MenuItem value="">
-              <em>Chọn Rạp</em>
+              <em>Chọn rạp</em>
             </MenuItem>
+            {cinemas.heThongRapChieu?.map((cinemaItem) => {
+              return (
+                <MenuItem key={cinemaItem.maHeThongRap} value={cinemaItem}>
+                  {cinemaItem.tenHeThongRap}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
-
         <FormControl sx={{ m: 1, minWidth: 80, width: 1 / 4 }} color="warning">
           <InputLabel id="demo-simple-select-autowidth-label">
             Ngày giờ chiếu
@@ -81,17 +118,55 @@ export default function ShowingSelect() {
           <Select
             labelId="demo-simple-select-autowidth-label"
             id="demo-simple-select-autowidth"
-            // value={age}
-            // label="Age"
-            // onChange={handleChange}
+            value={date}
+            onChange={handleChangeDate}
+            error={!!errors}
+            autoWidth
+            label="Ngày giờ chiếu"
           >
             <MenuItem value="">
               <em>Chọn ngày giờ chiếu</em>
             </MenuItem>
+
+            {dateCinemas.map((dateCinema) => {
+              return (
+                <MenuItem key={dateCinema.maCumRap} value={dateCinema.maCumRap}>
+                  {dateCinema.lichChieuPhim.map((showtime) => {
+                    const time = dayjs(showtime.ngayChieuGioChieu).format(
+                      "DD-MM-YYYY ~ HH:mm"
+                    );
+                    return (
+                      <span
+                        key={showtime.maLichChieu}
+                        onClick={() => {
+                          setCodeTimeCinema(showtime.maLichChieu);
+                          console.log(showtime.maLichChieu);
+                        }}
+                      >
+                        {time}
+                      </span>
+                    );
+                  })}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
-
-        <ButtonMovie height="55px">MUA VÉ NGAY</ButtonMovie>
+        <ButtonMovie
+          margin={0}
+          height="56px"
+          onClick={() => {
+            if (!codeTimeCinema) {
+              setErrors(true);
+              navigate(`/`);
+            } else {
+              setErrors(false);
+              navigate(`/tickets/${codeTimeCinema}`);
+            }
+          }}
+        >
+          mua vé ngay
+        </ButtonMovie>
       </Box>
     </Paper>
   );

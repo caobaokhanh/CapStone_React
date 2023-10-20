@@ -10,11 +10,6 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import { Navigation, Autoplay } from "swiper/modules";
 import { Box } from "@mui/material";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
 export default function Banner() {
   const { data: banners = [], isLoading } = useQuery({
     queryKey: ["banners"],
@@ -34,7 +29,7 @@ export default function Banner() {
   // });
 
   if (isLoading) {
-    // return <Loading />f
+    // return <Loading />
     return <h1>Loading...</h1>;
   }
 

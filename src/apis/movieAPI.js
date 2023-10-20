@@ -46,32 +46,3 @@ export async function addMovie(movie) {
     throw error.response.data?.content;
   }
 }
-
-export async function getCinemas(cinema) {
-  try {
-    const response = await fetcher.get("/QuanLyRap/LayThongTinHeThongRap", {
-      params: {
-        maHeThongRap: cinema,
-      },
-    });
-    return response.data.content;
-  } catch (error) {
-    throw error.response.data.content;
-  }
-}
-
-// export async function getInformationCinemas(cinema) {
-//   try {
-//     const response = await fetcher.get(
-//       "/QuanLyRap/LayThongTinCumRapTheoHeThong",
-//       {
-//         params: {
-//           maHeThongRap: cinema,
-//         },
-//       }
-//     );
-//     return response.data.content;
-//   } catch (error) {
-//     throw error.response.data.content;
-//   }
-// }
